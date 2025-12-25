@@ -117,6 +117,7 @@ TARGET_COPY_OUT_VENDOR := vendor
 # Recovery
 BOARD_HAS_LARGE_FILESYSTEM := true
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 
 # Build
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
@@ -150,6 +151,11 @@ TW_INCLUDE_LPTOOLS := true
 # Debugging
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
+
+# PBRP config
+PB_DISABLE_DEFAULT_TREBLE_COMP := true
+PB_OFFICIAL := false
+PB_TORCH_PATH := /sys/class/leds/flashlight
 
 # TWRP configs
 TW_THEME := portrait_hdpi

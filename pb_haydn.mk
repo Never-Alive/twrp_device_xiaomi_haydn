@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2019 The Android Open Source Project
+# Copyright (C) 2019 The TwrpBuilder Open-Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-PRODUCT_MAKEFILES := \
-	$(LOCAL_DIR)/pb_haydn.mk
+DEVICE_PATH := device/xiaomi/haydn
 
-COMMON_LUNCH_CHOICES := \
-    pb_haydn-user \
-    pb_haydn-userdebug \
-    pb_haydn-eng
+# Inherit device.mk
+$(call inherit-product, $(DEVICE_PATH)/device.mk)
+
+# Release name
+PRODUCT_RELEASE_NAME := haydn
+
+# Device identifier
+PRODUCT_DEVICE := haydn
+PRODUCT_NAME := pb_haydn
+PRODUCT_BRAND := Xiaomi
+PRODUCT_MODEL := Redmi K40 Pro
+PRODUCT_MANUFACTURER := Xiaomi
+
+# Assert
+TARGET_OTA_ASSERT_DEVICE := haydn,haydn_in,haydnin
+
+# Theme
+TW_STATUS_ICONS_ALIGN := center
+TW_Y_OFFSET := 0
+TW_H_OFFSET := 0

@@ -1,61 +1,63 @@
 #!/system/bin/sh
 
-# helper function
-set_device_props() {
-    DEVICE="$1"
-    NAME="$2"
-    MODEL="$3"
-
-    # device identifiers
-    resetprop ro.build.product "$DEVICE"
-    resetprop ro.product.device "$DEVICE"
-    resetprop ro.product.odm.device "$DEVICE"
-    resetprop ro.product.vendor.device "$DEVICE"
-    resetprop ro.product.product.device "$DEVICE"
-    resetprop ro.product.system.device "$DEVICE"
-    resetprop ro.product.system_ext.device "$DEVICE"
-
-    resetprop ro.product.name "$NAME"
-    resetprop ro.product.odm.name "$NAME"
-    resetprop ro.product.vendor.name "$NAME"
-    resetprop ro.product.product.name "$NAME"
-    resetprop ro.product.system.name "$NAME"
-    resetprop ro.product.system_ext.name "$NAME"
-
-    # model
-    resetprop ro.product.model "$MODEL"
-    resetprop ro.product.odm.model "$MODEL"
-    resetprop ro.product.vendor.model "$MODEL"
-    resetprop ro.product.product.model "$MODEL"
-    resetprop ro.product.system.model "$MODEL"
-    resetprop ro.product.system_ext.model "$MODEL"
+property_override() {
+    resetprop "$1" "$2"
 }
 
-resetprop ro.build.date.utc 1609430400
-resetprop ro.bootimage.build.date.utc 1609430400
+model_property_override() {
+    device="$1"
+    name="$2"
+    model="$3"
 
-SKU="$(getprop ro.boot.hardware.sku)"
-HWC="$(getprop ro.boot.hwc)"
+    property_override ro.build.product "$device"
+    property_override ro.product.device "$device"
+    property_override ro.product.odm.device "$device"
+    property_override ro.product.vendor.device "$device"
+    property_override ro.product.product.device "$device"
+    property_override ro.product.system_ext.device "$device"
+    property_override ro.product.system.device "$device"
 
-echo "[haydn] SKU=$SKU HWC=$HWC"
+    property_override ro.product.name "$name"
+    property_override ro.product.odm.name "$name"
+    property_override ro.product.vendor.name "$name"
+    property_override ro.product.product.name "$name"
+    property_override ro.product.system_ext.name "$name"
+    property_override ro.product.system.name "$name"
 
-case "$SKU" in
-    haydn)
-        if [ "$HWC" = "CN" ]; then
-            # Redmi K40 Pro (China)
-            set_device_props "haydn" "haydn" "Redmi K40 Pro"
+    property_override ro.product.model "$model"
+    property_override ro.product.odm.model "$model"
+    property_override ro.product.vendor.model "$model"
+    property_override ro.product.product.model "$model"
+    property_override ro.product.system_ext.model "$model"
+    property_override ro.product.system.model "$model"
+}
+
+vendor_load_properties() {
+
+    property_override ro.bootimage.build.date.utc 1609430400
+    property_override ro.build.date.utc 1609430400
+
+    sku=$(getprop ro.boot.hardware.sku)
+    hwc=$(getprop ro.boot.hwc)
+
+    if [ "$sku" = "haydn" ]; then
+        if [ "$hwc" = "CN" ]; then
+            model_property_override "haydn" "haydn" "Redmi K40 Pro"
         else
-            # Mi 11i (Global/EU)
-            set_device_props "haydn" "haydn" "Mi 11i"
+            model_property_override "haydn" "haydn" "Mi 11i"
         fi
-        ;;
-    haydn_in)
-        # Mi 11X Pro (India)
-        set_device_props "haydnin" "haydn_in" "Mi 11X Pro"
-        ;;
-    *)
-        set_device_props "unknown" "unknown" "unknown"
-        ;;
-esac
+
+    elif [ "$sku" = "haydnpro" ]; then
+        model_property_override "haydn" "haydnpro" "Redmi K40 Pro+"
+
+    elif [ "$sku" = "haydn_in" ]; then
+        model_property_override "haydnin" "haydn_in" "Mi 11X Pro"
+
+    else
+        model_property_override "unknown" "unknown" "unknown name"
+    fi
+}
+
+vendor_load_properties
 
 exit 0
